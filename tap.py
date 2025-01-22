@@ -3,20 +3,20 @@ import sys
 import threading
 import time
 
-import pynput
+import pyautogui
+
 from PyQt5.QtCore import Qt, QRect
-from PyQt5.QtGui import QPainter, QColor, QMouseEvent, QResizeEvent, QKeyEvent
+from PyQt5.QtGui import QPainter, QColor, QMouseEvent, QResizeEvent, QKeyEvent, QIcon
 from PyQt5.QtWidgets import QApplication, QWidget
 
 import window
-
 
 class SelectionWidget(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle('KavkaTapper')
         self.setWindowIconText('KavkaTapper')
-
+        self.setWindowIcon(QIcon('kavka.icns'))
         self.setAttribute(Qt.WA_TranslucentBackground, True)
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.setAttribute(Qt.WA_OpaquePaintEvent, True)
@@ -31,7 +31,6 @@ class SelectionWidget(QWidget):
             self.selection_start = event.pos()
             self.selection_end = self.selection_start
             self.is_selecting = True
-
 
     def mouseMoveEvent(self, event: QMouseEvent) -> None:
         if not self.is_selecting:
@@ -60,36 +59,34 @@ class SelectionWidget(QWidget):
         elif a0.key() == Qt.Key_Escape:
             self.close()
 
-    def clicker(
-        self
-    ) -> None:
+    def clicker(self) -> None:
         x1, y1 = self.selection_start.x(), self.selection_start.y()
         x2, y2 = self.selection_end.x(), self.selection_end.y()
         box_width = 60
-        offset = 5
+        offset = 10
         center_x = (x1 + x2) / 2
         center_y = (y1 + y2) / 2
         click_box = (
-            (center_x+box_width, center_y+box_width),
-            (center_x-box_width, center_y-box_width)
+            (center_x + box_width, center_y + box_width),
+            (center_x - box_width, center_y - box_width)
         )
-        mouse = pynput.mouse.Controller()
-        mouse.position = (center_x, center_y)
+        pyautogui.moveTo(center_x, center_y)
 
-        while window.get_active_window() != 'Google Chrome': time.sleep(0.1) # wait for focus Chrome
-        while window.get_active_window() == 'Google Chrome':
-            mouse.click(pynput.mouse.Button.left)
-            delay = random.uniform(0.03, 0.1)
-            time.sleep(delay)
-            mouse.move(
+        while 'Chrome' not in window.get_active_window():
+            time.sleep(0.1)
+
+        while 'Chrome' in window.get_active_window():
+            pyautogui.click()
+            time.sleep(random.uniform(0.03, 0.1))
+            pyautogui.move(
                 random.randint(-offset, offset),
                 random.randint(-offset, offset)
             )
-            if mouse.position[0] < click_box[1][0] or mouse.position[0] > click_box[0][0]:
-                mouse.position = (center_x, center_y)
+
+            if pyautogui.position()[0] < click_box[1][0] or pyautogui.position()[0] > click_box[0][0]:
+                pyautogui.moveTo(center_x, center_y)
+
         self.reset()
-
-
 
     def paintEvent(self, event: QMouseEvent) -> None:
         painter = QPainter(self)
@@ -117,8 +114,8 @@ class SelectionWidget(QWidget):
         self.update()
         self.showMaximized()
 
-if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    widget = SelectionWidget()
-    widget.showMaximized()
-    sys.exit(app.exec_())
+
+app = QApplication(sys.argv)
+widget = SelectionWidget()
+widget.showMaximized()
+sys.exit(app.exec_())
