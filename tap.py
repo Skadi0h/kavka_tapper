@@ -5,7 +5,13 @@ import time
 
 import pynput
 from PyQt5.QtCore import Qt, QRect
-from PyQt5.QtGui import QPainter, QColor, QMouseEvent, QResizeEvent, QKeyEvent
+from PyQt5.QtGui import (
+    QPainter,
+    QColor,
+    QMouseEvent,
+    QResizeEvent,
+    QKeyEvent
+)
 from PyQt5.QtWidgets import QApplication, QWidget
 
 import window
@@ -31,7 +37,6 @@ class SelectionWidget(QWidget):
             self.selection_start = event.pos()
             self.selection_end = self.selection_start
             self.is_selecting = True
-
 
     def mouseMoveEvent(self, event: QMouseEvent) -> None:
         if not self.is_selecting:
@@ -61,7 +66,7 @@ class SelectionWidget(QWidget):
             self.close()
 
     def clicker(
-        self
+            self
     ) -> None:
         x1, y1 = self.selection_start.x(), self.selection_start.y()
         x2, y2 = self.selection_end.x(), self.selection_end.y()
@@ -70,14 +75,15 @@ class SelectionWidget(QWidget):
         center_x = (x1 + x2) / 2
         center_y = (y1 + y2) / 2
         click_box = (
-            (center_x+box_width, center_y+box_width),
-            (center_x-box_width, center_y-box_width)
+            (center_x + box_width, center_y + box_width),
+            (center_x - box_width, center_y - box_width)
         )
         mouse = pynput.mouse.Controller()
         mouse.position = (center_x, center_y)
 
-        while window.get_active_window() != 'Google Chrome': time.sleep(0.1) # wait for focus Chrome
-        while window.get_active_window() == 'Google Chrome':
+        while 'Google Chrome' not in window.get_active_window():
+            time.sleep(0.1)  # wait for focus Chrome
+        while 'Google Chrome' in window.get_active_window():
             mouse.click(pynput.mouse.Button.left)
             delay = random.uniform(0.03, 0.1)
             time.sleep(delay)
@@ -87,9 +93,7 @@ class SelectionWidget(QWidget):
             )
             if mouse.position[0] < click_box[1][0] or mouse.position[0] > click_box[0][0]:
                 mouse.position = (center_x, center_y)
-        self.reset()
-
-
+        self.close()
 
     def paintEvent(self, event: QMouseEvent) -> None:
         painter = QPainter(self)
@@ -110,12 +114,6 @@ class SelectionWidget(QWidget):
     def resizeEvent(self, event: QResizeEvent) -> None:
         self.update()
 
-    def reset(self):
-        self.selection_start = None
-        self.selection_end = None
-        self.is_selecting = False
-        self.update()
-        self.showMaximized()
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
