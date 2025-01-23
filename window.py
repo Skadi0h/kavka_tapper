@@ -12,5 +12,3 @@ def focus_app_by_name(app_name: str) -> None:
         if app_name in app.localizedName():
             app.activateWithOptions_(4)  # NSApplicationActivateIgnoringOtherApps
             break
-
-__all__ = ['get_active_window']
