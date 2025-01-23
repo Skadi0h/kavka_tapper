@@ -6,6 +6,5 @@ readme = "README.md"
 requires-python = "==3.11.6"
 dependencies = [
     "pyautogui>=0.9.54",
-    "pyinstaller>=6.11.1",
     "pyqt5>=5.15.11",
 ]

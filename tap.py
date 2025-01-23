@@ -114,8 +114,8 @@ class SelectionWidget(QWidget):
         self.update()
         self.showMaximized()
 
-
-app = QApplication(sys.argv)
-widget = SelectionWidget()
-widget.showMaximized()
-sys.exit(app.exec_())
+if __name__ == '__main__':
+    app = QApplication(sys.argv)
+    widget = SelectionWidget()
+    widget.showMaximized()
+    sys.exit(app.exec_())
