@@ -6,9 +6,7 @@ KavkaTapper is a macOS application built with PyQt5 that allows users to select 
 
 - **Screen Region Selection**: Select a rectangular region on the screen by right-clicking and dragging the mouse.
 - **Automated Clicking**: After selecting an area, pressing the 'T' key will initiate a series of automated clicks within that region.
-- **App Focus**: The application will focus on an active window (currently, Chrome is supported).
-- **Translucent and Frameless Window**: The app runs with a transparent background and no window borders.
-- **Resizable and Maximizable**: The window is resizable and can be maximized for a full-screen experience.
+- **App Focus**: The application will focus on an active window (currently, only Chrome is supported).
   
 ## Requirements
 
