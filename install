@@ -1,0 +1,15 @@
+#!/bin/bash
+echo "Update Homebrew..."
+brew update
+
+echo "Installing dependencies..."
+brew install uv
+uv --version
+uv install python3.11.6
+uv venv
+uv sync
+
+echo "Installation complete!"
+
+
+

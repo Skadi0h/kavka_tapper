@@ -16,9 +16,9 @@ class SelectionWidget(QWidget):
         super().__init__()
         self.setWindowTitle('KavkaTapper')
         self.setWindowIconText('KavkaTapper')
-        self.setWindowIcon(QIcon('kavka.icns'))
+        self.setWindowIcon(QIcon('./assets/kavka_256x256x32.png'))
         self.setAttribute(Qt.WA_TranslucentBackground, True)
-        self.setWindowFlags(Qt.FramelessWindowHint)
+        self.setWindowFlags(Qt.MaximizeUsingFullscreenGeometryHint | Qt.FramelessWindowHint)
         self.setAttribute(Qt.WA_OpaquePaintEvent, True)
         self.selection_start = None
         self.selection_end = None
@@ -62,8 +62,8 @@ class SelectionWidget(QWidget):
     def clicker(self) -> None:
         x1, y1 = self.selection_start.x(), self.selection_start.y()
         x2, y2 = self.selection_end.x(), self.selection_end.y()
-        box_width = 60
-        offset = 10
+        box_width = 80
+        offset = 3
         center_x = (x1 + x2) / 2
         center_y = (y1 + y2) / 2
         click_box = (
@@ -71,21 +71,28 @@ class SelectionWidget(QWidget):
             (center_x - box_width, center_y - box_width)
         )
         pyautogui.moveTo(center_x, center_y)
-
-        while 'Chrome' not in window.get_active_window():
-            time.sleep(0.1)
-
+        window.focus_app_by_name('Chrome')
+        i = 0
         while 'Chrome' in window.get_active_window():
-            pyautogui.click()
-            time.sleep(random.uniform(0.03, 0.1))
+            for _ in range(random.randint(1, 4)):
+                pyautogui.click()
+            time.sleep(random.uniform(0.05, 0.20))
             pyautogui.move(
                 random.randint(-offset, offset),
                 random.randint(-offset, offset)
             )
-
+            if not i % random.randint(13, 52):
+                scroll_random = random.randint(1, 5)
+                pyautogui.scroll(scroll_random)
+                pyautogui.scroll(-scroll_random)
+                time.sleep(random.uniform(0.01, 0.5))
+                i = 0
             if pyautogui.position()[0] < click_box[1][0] or pyautogui.position()[0] > click_box[0][0]:
-                pyautogui.moveTo(center_x, center_y)
-
+                pyautogui.move(
+                    center_x+random.randint(-offset, offset),
+                    center_y+random.randint(-offset, offset)
+                )
+            i += 1
         self.reset()
 
     def paintEvent(self, event: QMouseEvent) -> None:
