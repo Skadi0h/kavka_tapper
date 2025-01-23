@@ -26,7 +26,7 @@ cd kavka_tapper;
 bash install;
 ```
 
-## Usage
+## Run
 
 ```bash
 bash run
